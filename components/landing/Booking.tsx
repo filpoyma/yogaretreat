@@ -16,21 +16,31 @@ import { Textarea } from "@/components/ui/textarea";
 import { OrganizerTelegramLink } from "@/components/shared/OrganizerTelegramLink";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionKicker } from "@/components/shared/SectionKicker";
+import type { TBookingErrorCode } from "@/lib/i18n/dictionaries/ru";
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
+import type { TLocale } from "@/lib/i18n/locales";
 import { getOrganizerTelegramContact } from "@/lib/site-contact";
 
-const EXPERIENCE = [
-  "Новичок — первый ретрит",
-  "Занимаюсь периодически",
-  "Регулярная практика",
-  "Инструктор",
-] as const;
+interface IBookingSectionProps {
+  readonly locale: TLocale;
+  readonly t: TDictionary["booking"];
+}
 
-export function BookingSection() {
+export function BookingSection({ locale, t }: IBookingSectionProps) {
   const organizerTelegram = getOrganizerTelegramContact();
   const [experience, setExperience] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [headingLead, headingItalic] = t.heading;
+
+  function messageForCode(code: string | undefined): string {
+    if (code && code in t.errors) {
+      return t.errors[code as TBookingErrorCode];
+    }
+    return t.errors.SUBMIT_FAILED;
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,15 +59,17 @@ export function BookingSection() {
           contact: formData.get("contact"),
           experience: experience ?? "",
           message: formData.get("message") ?? "",
+          locale,
         }),
       });
 
       const data = (await response.json().catch(() => ({}))) as {
         error?: string;
+        code?: string;
       };
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Не удалось отправить заявку");
+        throw new Error(messageForCode(data.code));
       }
 
       setSubmitted(true);
@@ -65,9 +77,7 @@ export function BookingSection() {
       setExperience(null);
     } catch (submitError) {
       setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Не удалось отправить заявку",
+        submitError instanceof Error ? submitError.message : t.errors.SUBMIT_FAILED,
       );
     } finally {
       setSending(false);
@@ -82,11 +92,11 @@ export function BookingSection() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <SectionKicker index="06" label="Бронирование" />
+          <SectionKicker index="06" label={t.kickerLabel} />
           <h2 className="mt-6 font-heading tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-[1.02] text-bark">
-            Оставьте заявку —
+            {headingLead}
             <br />
-            <span className="italic text-clay">и возвращайтесь к себе</span>
+            <span className="italic text-clay">{headingItalic}</span>
           </h2>
         </Reveal>
         <div className="mt-14 grid grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
@@ -97,71 +107,63 @@ export function BookingSection() {
             >
               <div className="relative z-10 flex h-full flex-col">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sand/50">
-                  Стоимость участия
+                  {t.priceLabel}
                 </div>
                 <div className="mt-4 flex items-end gap-3">
                   <span className="font-heading text-6xl leading-none sm:text-7xl">
-                    180 $
+                    {t.priceAmount}
                   </span>
-                  <span className="pb-1 text-sm text-sand/60">/ сутки</span>
+                  <span className="pb-1 text-sm text-sand/60">{t.priceUnit}</span>
                 </div>
-                <div className="mt-2 text-sm italic text-clay-light">
-                  all-inclusive: проживание, питание, программа
-                </div>
+                <div className="mt-2 text-sm italic text-clay-light">{t.priceNote}</div>
                 <div className="mt-8 space-y-5 border-t border-white/15 pt-8">
                   <div className="flex items-start gap-3">
-                    <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-clay-light" aria-hidden />
+                    <CalendarDays
+                      className="mt-0.5 h-4 w-4 shrink-0 text-clay-light"
+                      aria-hidden
+                    />
                     <div>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sand/50">
-                        Даты
+                        {t.datesLabel}
                       </div>
-                      <div className="mt-0.5 text-sm text-sand">10–16 ноября 2026</div>
+                      <div className="mt-0.5 text-sm text-sand">{t.datesValue}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-clay-light" aria-hidden />
                     <div>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sand/50">
-                        Локация
+                        {t.locationLabel}
                       </div>
-                      <div className="mt-0.5 text-sm text-sand">
-                        Северный Гоа · эко-отель «Папа Джолли»
-                      </div>
+                      <div className="mt-0.5 text-sm text-sand">{t.locationValue}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Wallet className="mt-0.5 h-4 w-4 shrink-0 text-clay-light" aria-hidden />
                     <div>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sand/50">
-                        Итого
+                        {t.totalLabel}
                       </div>
-                      <div className="mt-0.5 text-sm text-sand">
-                        ≈ 1 080 $ за 7 дней / 6 ночей
-                      </div>
+                      <div className="mt-0.5 text-sm text-sand">{t.totalValue}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Users className="mt-0.5 h-4 w-4 shrink-0 text-clay-light" aria-hidden />
                     <div>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-sand/50">
-                        Группа
+                        {t.groupLabel}
                       </div>
-                      <div className="mt-0.5 text-sm text-sand">
-                        Камерный формат · любой уровень
-                      </div>
+                      <div className="mt-0.5 text-sm text-sand">{t.groupValue}</div>
                     </div>
                   </div>
                 </div>
                 <p className="mt-auto pt-8 text-xs leading-relaxed text-sand/50">
-                  Авиабилеты до Гоа — за свой счёт. После заявки мы свяжемся с вами,
-                  ответим на вопросы и забронируем место.
+                  {t.priceFootnote}
                 </p>
                 {organizerTelegram ? (
                   <p className="mt-3 text-xs leading-relaxed text-sand/50">
-                    Вопросы до заявки —{" "}
-                    <OrganizerTelegramLink
-                      className="text-clay-light underline-offset-2 hover:underline"
-                    />
+                    {t.questionsPrefix}{" "}
+                    <OrganizerTelegramLink className="text-clay-light underline-offset-2 hover:underline" />
                   </p>
                 ) : null}
               </div>
@@ -175,40 +177,37 @@ export function BookingSection() {
             >
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="booking-name">Ваше имя *</Label>
+                  <Label htmlFor="booking-name">{t.nameLabel}</Label>
                   <Input
                     id="booking-name"
                     name="name"
                     required
-                    placeholder="Елена Смирнова"
+                    placeholder={t.namePlaceholder}
                     data-testid="booking-name-input"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="booking-contact">Телефон / Telegram / WhatsApp *</Label>
+                  <Label htmlFor="booking-contact">{t.contactLabel}</Label>
                   <Input
                     id="booking-contact"
                     name="contact"
                     required
-                    placeholder="+7 (999) 000-00-00 или @username"
+                    placeholder={t.contactPlaceholder}
                     data-testid="booking-contact-input"
                   />
                 </div>
               </div>
               <div className="mt-6 space-y-2">
-                <Label>Опыт в йоге</Label>
-                <Select
-                  value={experience}
-                  onValueChange={(value) => setExperience(value)}
-                >
+                <Label>{t.experienceLabel}</Label>
+                <Select value={experience} onValueChange={(value) => setExperience(value)}>
                   <SelectTrigger
                     className="w-full"
                     data-testid="booking-experience-select"
                   >
-                    <SelectValue placeholder="Выберите ваш уровень" />
+                    <SelectValue placeholder={t.experiencePlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
-                    {EXPERIENCE.map((option) => (
+                    {t.experienceOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
                       </SelectItem>
@@ -217,14 +216,14 @@ export function BookingSection() {
                 </Select>
               </div>
               <div className="mt-6 flex min-h-0 flex-1 flex-col space-y-2">
-                <Label htmlFor="booking-message">Пожелания или вопросы</Label>
+                <Label htmlFor="booking-message">{t.messageLabel}</Label>
                 <Textarea
                   id="booking-message"
                   name="message"
                   rows={4}
                   data-testid="booking-message-textarea"
                   className="min-h-32 flex-1 field-sizing-fixed"
-                  placeholder="Расскажите о вашем запросе на ретрит, пищевых предпочтениях или ограничениях по здоровью…"
+                  placeholder={t.messagePlaceholder}
                 />
               </div>
               <Button
@@ -234,7 +233,7 @@ export function BookingSection() {
                 data-testid="booking-submit-button"
                 className="mt-8 w-full rounded-full bg-clay text-base text-white transition-transform duration-300 hover:-translate-y-0.5 hover:bg-clay/90 sm:w-auto sm:px-10"
               >
-                {sending ? "Отправляем…" : "Отправить заявку"}
+                {sending ? t.submitting : t.submit}
               </Button>
               {error ? (
                 <p className="mt-4 text-sm text-clay" role="alert">
@@ -242,14 +241,9 @@ export function BookingSection() {
                 </p>
               ) : null}
               {submitted ? (
-                <p className="mt-4 text-sm text-jungle">
-                  Спасибо. Мы получили заявку и свяжемся с вами.
-                </p>
+                <p className="mt-4 text-sm text-jungle">{t.success}</p>
               ) : (
-                <p className="mt-4 text-xs text-stone-warm">
-                  Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
-                  Никакого спама — только один осмысленный диалог о вашем ретрите.
-                </p>
+                <p className="mt-4 text-xs text-stone-warm">{t.consent}</p>
               )}
             </form>
           </Reveal>

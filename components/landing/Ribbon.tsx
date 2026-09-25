@@ -1,19 +1,14 @@
 import { Sparkle } from "lucide-react";
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
 
-const ITEMS = [
-  "Мягкий детокс организма",
-  "Хатха-йога",
-  "Цигун и тай-чи",
-  "Нейрографика",
-  "Информационный детокс",
-  "Sound healing",
-  "Эко-отель «Папа Джолли»",
-] as const;
+interface IRibbonProps {
+  readonly t: TDictionary["ribbon"];
+}
 
-function Track() {
+function Track({ items }: { readonly items: readonly string[] }) {
   return (
     <>
-      {ITEMS.map((item) => (
+      {items.map((item) => (
         <span key={item} className="flex items-center gap-8 whitespace-nowrap">
           <span className="font-heading text-lg italic tracking-wide text-sand/90">
             {item}
@@ -25,15 +20,15 @@ function Track() {
   );
 }
 
-export function Ribbon() {
+export function Ribbon({ t }: IRibbonProps) {
   return (
     <div
       data-testid="values-marquee"
       className="overflow-hidden border-y border-jungle-deep bg-jungle py-5"
     >
       <div className="animate-marquee flex w-max items-center gap-8">
-        <Track />
-        <Track />
+        <Track items={t.items} />
+        <Track items={t.items} />
       </div>
     </div>
   );

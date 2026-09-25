@@ -42,9 +42,12 @@ export interface IFaqItem {
   readonly answer: string;
 }
 
+import type { TLocale } from "@/lib/i18n/locales";
+
 export interface IBookingPayload {
   name: string;
   contact: string;
   experience: string;
   message: string;
+  locale: TLocale;
 }

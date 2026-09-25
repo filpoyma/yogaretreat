@@ -1,35 +1,14 @@
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionKicker } from "@/components/shared/SectionKicker";
-import type { IPillar } from "@/types/retreat";
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
 
-const PILLARS: readonly IPillar[] = [
-  {
-    index: "01",
-    title: "Мягкое очищение",
-    description:
-      "Растительное детокс-меню, свежевыжатые соки и травяные чаи бережно перезагружают пищеварение без голодания и стресса для тела.",
-  },
-  {
-    index: "02",
-    title: "Снижение стресса",
-    description:
-      "Пранаямы, медитации и саунд-хилинг снижают уровень тревожности и возвращают нервной системе ощущение безопасности.",
-  },
-  {
-    index: "03",
-    title: "Восстановление энергии",
-    description:
-      "Союз динамической хатха-йоги и плавного цигун пробуждает жизненный тонус и возвращает телу естественную подвижность.",
-  },
-  {
-    index: "04",
-    title: "Информационный детокс",
-    description:
-      "Пространство без новостной суеты и дедлайнов. Внимание возвращается к себе — к дыханию, телу и тишине тропиков.",
-  },
-];
+interface IPillarsProps {
+  readonly t: TDictionary["pillars"];
+}
 
-export function Pillars() {
+export function Pillars({ t }: IPillarsProps) {
+  const [headingLead, headingItalic] = t.heading;
+
   return (
     <section
       id="program"
@@ -38,22 +17,18 @@ export function Pillars() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <SectionKicker index="01" label="Программа" />
+          <SectionKicker index="01" label={t.kickerLabel} />
           <h2 className="mt-6 font-heading tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-[1.02] text-bark">
-            Четыре опоры,
+            {headingLead}
             <br />
-            <span className="italic text-clay">на которых строится ретрит</span>
+            <span className="italic text-clay">{headingItalic}</span>
           </h2>
         </Reveal>
         <Reveal delayMs={80} className="mt-6 max-w-2xl">
-          <p className="text-base text-stone-warm sm:text-lg">
-            Программа направлена на мягкое очищение организма, снижение уровня
-            стресса и восстановление жизненной энергии — через расслабление,
-            практику йоги и цигун, правильное питание и цифровой покой.
-          </p>
+          <p className="text-base text-stone-warm sm:text-lg">{t.intro}</p>
         </Reveal>
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {PILLARS.map((pillar, i) => (
+          {t.items.map((pillar, i) => (
             <Reveal key={pillar.index} delayMs={i * 70}>
               <article
                 data-testid={`pillar-card-${pillar.index}`}

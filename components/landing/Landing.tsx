@@ -11,25 +11,33 @@ import { Ribbon } from "@/components/landing/Ribbon";
 import { Schedule } from "@/components/landing/Schedule";
 import { RetreatJsonLd } from "@/components/shared/RetreatJsonLd";
 import { SmoothScroll } from "@/components/shared/SmoothScroll";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import type { TLocale } from "@/lib/i18n/locales";
 
-export default function Home() {
+interface ILandingProps {
+  readonly locale: TLocale;
+}
+
+export function Landing({ locale }: ILandingProps) {
+  const dict = getDictionary(locale);
+
   return (
     <div className="overflow-x-clip bg-sand text-bark">
-      <RetreatJsonLd />
+      <RetreatJsonLd locale={locale} dict={dict} />
       <SmoothScroll />
-      <Nav />
+      <Nav locale={locale} t={dict.nav} />
       <main>
-        <Hero />
-        <Ribbon />
-        <Pillars />
-        <Schedule />
-        <Inclusions />
-        <Results />
-        <Gallery />
-        <BookingSection />
-        <Faq />
+        <Hero t={dict.hero} />
+        <Ribbon t={dict.ribbon} />
+        <Pillars t={dict.pillars} />
+        <Schedule t={dict.schedule} />
+        <Inclusions t={dict.inclusions} />
+        <Results t={dict.results} />
+        <Gallery t={dict.gallery} />
+        <BookingSection locale={locale} t={dict.booking} />
+        <Faq t={dict.faq} />
       </main>
-      <Footer />
+      <Footer t={dict.footer} />
     </div>
   );
 }

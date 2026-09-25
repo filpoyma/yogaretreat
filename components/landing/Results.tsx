@@ -1,34 +1,7 @@
 import { Compass, HeartHandshake, Moon, Sparkles } from "lucide-react";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionKicker } from "@/components/shared/SectionKicker";
-import type { IResult } from "@/types/retreat";
-
-const RESULTS: readonly IResult[] = [
-  {
-    title: "Лёгкость в теле",
-    description:
-      "Ощущение лёгкости и свободы движения, ровный тон кожи и ясный взгляд.",
-    icon: "sparkles",
-  },
-  {
-    title: "Глубокий сон",
-    description:
-      "Заметное улучшение качества сна — засыпать становится легко, утро — добрым.",
-    icon: "moon",
-  },
-  {
-    title: "Спокойствие",
-    description:
-      "Снижение уровня тревожности и внутреннего шума, устойчивое ощущение опоры.",
-    icon: "heart",
-  },
-  {
-    title: "Чёткий план домой",
-    description:
-      "Персональный план поддержания здорового образа жизни и стабильной психики в городе.",
-    icon: "compass",
-  },
-];
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
 
 const ICONS = {
   sparkles: Sparkles,
@@ -37,20 +10,26 @@ const ICONS = {
   compass: Compass,
 } as const;
 
-export function Results() {
+interface IResultsProps {
+  readonly t: TDictionary["results"];
+}
+
+export function Results({ t }: IResultsProps) {
+  const [headingLead, headingItalic] = t.heading;
+
   return (
     <section className="bg-jungle py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <SectionKicker index="04" label="Ожидаемый результат" tone="dark" />
+          <SectionKicker index="04" label={t.kickerLabel} tone="dark" />
           <h2 className="mt-6 font-heading tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-[1.02] text-sand">
-            С чем вы
+            {headingLead}
             <br />
-            <span className="italic text-clay-light">уедете домой</span>
+            <span className="italic text-clay-light">{headingItalic}</span>
           </h2>
         </Reveal>
         <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {RESULTS.map((item, i) => {
+          {t.items.map((item, i) => {
             const Icon = ICONS[item.icon];
             return (
               <Reveal key={item.title} delayMs={i * 70}>

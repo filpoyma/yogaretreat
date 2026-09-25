@@ -3,54 +3,31 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionKicker } from "@/components/shared/SectionKicker";
-import type { IFaqItem } from "@/types/retreat";
 
-const ITEMS: readonly IFaqItem[] = [
-  {
-    question: "Подходит ли ретрит новичкам?",
-    answer:
-      "Да. Программа построена мягко и экологично: инструкторы предлагают модификации для любого уровня — от первого занятия в жизни до многолетней практики.",
-  },
-  {
-    question: "Как добраться до эко-отеля «Папа Джолли»?",
-    answer:
-      "Нужно прилететь в аэропорт Гоа (Даболим GOI или Мопа GOX). Билеты приобретаются самостоятельно, а мы поможем подобрать рейс и организуем трансфер до отеля.",
-  },
-  {
-    question: "Нужна ли виза в Индию?",
-    answer:
-      "Да, оформляется электронная туристическая виза (e-Visa) — обычно это занимает 3–4 дня. После бронирования мы пришлём пошаговую инструкцию.",
-  },
-  {
-    question: "Какое питание предусмотрено?",
-    answer:
-      "Трёхразовое вегетарианское/веганское детокс-меню из свежих местных продуктов, свежевыжатые соки и травяные чаи. Учтём ваши пищевые особенности — укажите их в заявке.",
-  },
-  {
-    question: "Что взять с собой?",
-    answer:
-      "Лёгкую одежду из натуральных тканей для практик, купальник, головной убор, солнцезащитный крем и открытое сердце. Коврики и весь инвентарь уже ждут вас в шале.",
-  },
-];
+interface IFaqProps {
+  readonly t: TDictionary["faq"];
+}
 
-export function Faq() {
+export function Faq({ t }: IFaqProps) {
   const [open, setOpen] = useState(0);
+  const [headingLead, headingItalic] = t.heading;
 
   return (
     <section id="faq" data-testid="faq-section" className="scroll-mt-[65px] py-24 sm:py-32">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <SectionKicker index="07" label="Вопросы и ответы" />
+          <SectionKicker index="07" label={t.kickerLabel} />
           <h2 className="mt-6 font-heading tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-[1.02] text-bark">
-            Спрашивали?
+            {headingLead}
             <br />
-            <span className="italic text-clay">Отвечаем</span>
+            <span className="italic text-clay">{headingItalic}</span>
           </h2>
         </Reveal>
         <div className="mt-14 space-y-4">
-          {ITEMS.map((item, i) => {
+          {t.items.map((item, i) => {
             const expanded = open === i;
             return (
               <Reveal key={item.question} delayMs={i * 50}>

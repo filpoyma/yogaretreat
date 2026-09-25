@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { IMAGES } from "@/lib/assets";
 import { cn } from "@/lib/utils";
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionKicker } from "@/components/shared/SectionKicker";
-import type { IGalleryItem } from "@/types/retreat";
 
 function CaptionBody({
   index,
@@ -50,81 +50,6 @@ function CaptionBody({
   );
 }
 
-const ITEMS: readonly Omit<IGalleryItem, "src">[] = [
-  {
-    alt: "Утренние практики",
-    title: "Утренние практики",
-    description:
-      "Йога, цигун и медитации — мягкое пробуждение тела под шум пальм и первый свет.",
-    span: "md:col-span-7",
-    aspect: "aspect-[16/10]",
-  },
-  {
-    alt: "Ходьба тай-чи",
-    title: "Ходьба тай-чи",
-    description:
-      "Плавное, медленное движение из практик цигун — динамическая медитация для заземления и снятия стресса.",
-    span: "md:col-span-5",
-    aspect: "aspect-[16/10] md:aspect-auto md:h-full",
-  },
-  {
-    alt: "Нейрографика",
-    title: "Нейрографика",
-    description:
-      "Творческий метод рисования по специальным правилам: снижает стресс, помогает пережить эмоции и найти решения внутренних вопросов.",
-    span: "md:col-span-5",
-    aspect: "aspect-[4/5] md:aspect-auto md:h-full",
-  },
-  {
-    alt: "Путешествие в джунгли",
-    title: "Путешествие в джунгли",
-    description:
-      "Контакт с первозданной природой Гоа — тишина, зелень и ощущение настоящего момента.",
-    span: "md:col-span-7",
-    aspect: "aspect-[16/10]",
-  },
-  {
-    alt: "Направленная медитация (guided meditation)",
-    title: "Guided meditation",
-    description:
-      "Направленная медитация: вы следуете за голосом ведущего, который направляет ваши мысли, дыхание и внимание.",
-    span: "md:col-span-12",
-    aspect: "aspect-[16/10] md:aspect-[21/9]",
-  },
-  {
-    alt: "Личная коуч-сессия",
-    title: "Личная коуч-сессия",
-    description:
-      "Индивидуальная встреча с ведущим: ваш запрос, цели и бережная обратная связь один на один — с видом на океан.",
-    span: "md:col-span-5",
-    aspect: "aspect-[16/10] md:aspect-auto md:h-full",
-  },
-  {
-    alt: "Консультация доктора Аюрведы",
-    title: "Консультация доктора Аюрведы",
-    description:
-      "Диагностика и персональные рекомендации по питанию и образу жизни от доктора древней науки о здоровье. По желанию.",
-    span: "md:col-span-7",
-    aspect: "aspect-[16/10]",
-  },
-  {
-    alt: "Киртан",
-    title: "Киртан",
-    description:
-      "Пространство, где мы вместе поём мантры, отпускаем напряжение и настраиваемся на гармонию. Живой звук, медитативная атмосфера, единение с собой и другими — время остановиться и просто побыть.",
-    span: "md:col-span-7",
-    aspect: "aspect-[16/10]",
-  },
-  {
-    alt: "Семинары и лекции",
-    title: "Семинары и лекции",
-    description:
-      "Практическая мудрость для современной жизни: как сохранять внутреннюю опору, справляться со стрессом и превращать знания в реальные изменения — уже сегодня.",
-    span: "md:col-span-5",
-    aspect: "aspect-[16/10] md:aspect-auto md:h-full",
-  },
-];
-
 function imageSizes(span: string): string {
   if (span.includes("col-span-12")) {
     return "(min-width: 1280px) 1216px, 100vw";
@@ -135,20 +60,26 @@ function imageSizes(span: string): string {
   return "(min-width: 1280px) 500px, (min-width: 768px) 42vw, 100vw";
 }
 
-export function Gallery() {
+interface IGalleryProps {
+  readonly t: TDictionary["gallery"];
+}
+
+export function Gallery({ t }: IGalleryProps) {
+  const [headingLead, headingItalic] = t.heading;
+
   return (
     <section id="gallery" className="scroll-mt-[65px] py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <SectionKicker index="05" label="Атмосфера" />
+          <SectionKicker index="05" label={t.kickerLabel} />
           <h2 className="mt-6 font-heading tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-[1.02] text-bark">
-            Девять мгновений
+            {headingLead}
             <br />
-            <span className="italic text-clay">нашего путешествия</span>
+            <span className="italic text-clay">{headingItalic}</span>
           </h2>
         </Reveal>
         <div className="mt-14 grid grid-cols-1 items-stretch gap-6 md:grid-cols-12">
-          {ITEMS.map((item, i) => (
+          {t.items.map((item, i) => (
             <Reveal key={item.title} delayMs={i * 40} className={item.span}>
               <figure className="group h-full">
                 <div

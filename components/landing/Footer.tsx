@@ -2,10 +2,15 @@
 
 import { Reveal } from "@/components/shared/Reveal";
 import { getOrganizerTelegramContact } from "@/lib/site-contact";
+import type { TDictionary } from "@/lib/i18n/dictionaries/ru";
 import { PAPA_JOLLY_GOOGLE_MAPS_HREF } from "@/lib/venue";
 import { scrollToId } from "@/lib/smooth-scroll";
 
-export function Footer() {
+interface IFooterProps {
+  readonly t: TDictionary["footer"];
+}
+
+export function Footer({ t }: IFooterProps) {
   const organizerTelegram = getOrganizerTelegramContact();
   const navLinkClass =
     "text-left text-sm text-jungle-mist transition-colors duration-300 hover:text-clay-light";
@@ -15,7 +20,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-start justify-between gap-10 border-b border-white/10 pb-14">
           <div>
-            <div className="font-heading text-2xl italic text-sand">Папа Джолли</div>
+            <div className="font-heading text-2xl italic text-sand">{t.logoTitle}</div>
             <a
               href={PAPA_JOLLY_GOOGLE_MAPS_HREF}
               target="_blank"
@@ -23,11 +28,10 @@ export function Footer() {
               data-testid="footer-map-link"
               className="mt-2 inline-block text-sm text-clay-light transition-colors duration-300 hover:text-sand hover:underline underline-offset-2"
             >
-              Карта
+              {t.mapLink}
             </a>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-jungle-mist">
-              Йога-детокс ретрит «Возвращение к себе». Индия, Северный Гоа · 10–16
-              ноября 2026.
+              {t.tagline}
             </p>
           </div>
           <nav className="flex flex-col gap-3">
@@ -37,7 +41,7 @@ export function Footer() {
               onClick={() => scrollToId("#program")}
               className={navLinkClass}
             >
-              Программа
+              {t.links.program}
             </button>
             <button
               type="button"
@@ -45,7 +49,7 @@ export function Footer() {
               onClick={() => scrollToId("#schedule")}
               className={navLinkClass}
             >
-              Расписание
+              {t.links.schedule}
             </button>
             <button
               type="button"
@@ -53,7 +57,7 @@ export function Footer() {
               onClick={() => scrollToId("#booking")}
               className={navLinkClass}
             >
-              Бронирование
+              {t.links.booking}
             </button>
             {organizerTelegram ? (
               <a
@@ -63,7 +67,7 @@ export function Footer() {
                 data-testid="footer-link-contacts"
                 className={navLinkClass}
               >
-                Контакты
+                {t.links.contacts}
               </a>
             ) : null}
           </nav>
@@ -74,14 +78,12 @@ export function Footer() {
             data-testid="footer-wordmark"
             style={{ fontSize: "clamp(2.6rem, 9vw, 9rem)" }}
           >
-            Возвращение к себе
+            {t.wordmark}
           </div>
         </Reveal>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pb-8 pt-6 text-xs text-jungle-mist/70">
-          <span data-testid="footer-copyright">
-            © 2026 Йога-детокс ретрит · Северный Гоа
-          </span>
-          <span>Сделано с дыханием и тишиной</span>
+          <span data-testid="footer-copyright">{t.copyright}</span>
+          <span>{t.madeWith}</span>
         </div>
       </div>
     </footer>
